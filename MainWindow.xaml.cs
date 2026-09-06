@@ -107,6 +107,13 @@ namespace EzPass
             x.Show();
         }
 
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            // Shut down the whole application, not just this window - other windows
+            // (bulk generator, wordlist editor) may still be open
+            Application.Current.Shutdown();
+        }
+
         public class NoteData
         {
             [JsonProperty("error")]

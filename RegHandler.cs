@@ -12,26 +12,20 @@ namespace EzPass
     {
         public static object ReadKey(string valueName)
         {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\EzPass", true);
-
-            if (key == null)
+            // Only read access is required here - writable access was previously requested
+            // even for reads, which violates least privilege
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\EzPass", false) ?? CreateNewTemplatedKey())
             {
-                key = CreateNewTemplatedKey();
+                return key.GetValue(valueName);
             }
-
-            return key.GetValue(valueName);
         }
 
         public static void WriteKey(string valueName, object obj)
         {
-            RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\EzPass", true);
-
-            if (key == null)
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\EzPass", true) ?? CreateNewTemplatedKey())
             {
-                key = CreateNewTemplatedKey();
+                key.SetValue(valueName, obj, RegistryValueKind.String);
             }
-
-            key.SetValue(valueName, obj, RegistryValueKind.String);
         }
 
         private static RegistryKey CreateNewTemplatedKey()
@@ -48,14 +42,14 @@ namespace EzPass
             public static string ToRegistryValue(List<string> list)
             {
                 string x = string.Join(";", list);
-                Regex.Replace(x, @"\t|\n|\r", "");      // Sanatise string before (remove new lines, returns etc) to make sure the registry entry is clean
+                x = Regex.Replace(x, @"\t|\n|\r", "");      // Sanitise string before (remove new lines, returns etc) to make sure the registry entry is clean
                 return x;
             }
 
             public static List<string> FromRegistryValue(object obj)
             {
                 string x = obj.ToString();
-                Regex.Replace(x, @"\t|\n|\r", "");
+                x = Regex.Replace(x, @"\t|\n|\r", "");
                 return x.Split(';').ToList();
             }
         }

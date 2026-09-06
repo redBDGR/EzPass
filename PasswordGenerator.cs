@@ -32,7 +32,7 @@ namespace EzPass
             if (useNumbers)
             {
                 if (determinedRandomNumber == 0)
-                    pass += $".{new Random().Next(10, 1000)}!";
+                    pass += $".{SecureRandom.Next(10, 1000)}!";
                 else
                     // Else if there is already a pre-determined random number (This is only used by the bulk generation window)
                     pass += $".{determinedRandomNumber}!";
@@ -48,7 +48,7 @@ namespace EzPass
         private static string FetchRandomWord()
         {
             // Get random word, convert it to lowercase then uppercase the first character (first character won't be turned into a symbol)
-            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(WordList.shortList[new Random(Guid.NewGuid().GetHashCode()).Next(0, WordList.shortList.Count)].ToLower());
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(WordList.shortList[SecureRandom.Next(0, WordList.shortList.Count)].ToLower());
         }
 
         /// <summary>
@@ -76,12 +76,14 @@ namespace EzPass
                     // If switch is set to false
                     if (!s)
                     {
-                        if (!usedChars.Contains(b[i]))
+                        // Check against the original (pre-replacement) character - usedChars must be
+                        // populated with the same before this guard can ever match
+                        if (!usedChars.Contains(entry))
                         {
                             // Replace character with symbol
                             b[i] = newChar;
-                            // Cache replaced characters
-                            usedChars.Add(b[i]);
+                            // Cache the original character as already converted
+                            usedChars.Add(entry);
                         }
                     }
 
@@ -125,12 +127,13 @@ namespace EzPass
                 // If replacement list contains this character
                 if (replacementChars.TryGetValue(entry, out char newChar))
                 {
-                    if (!usedChars.Contains(b[i]))
+                    // Check against the original (pre-replacement) character - see ReplaceCharacters above
+                    if (!usedChars.Contains(entry))
                     {
                         // Replace character with symbol
                         b[i] = newChar;
-                        // Cache replaced characters
-                        usedChars.Add(b[i]);
+                        // Cache the original character as already converted
+                        usedChars.Add(entry);
                     }
                 }
 

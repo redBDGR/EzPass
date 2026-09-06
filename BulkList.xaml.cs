@@ -26,11 +26,10 @@ namespace EzPass
         public void GenerateNewList()
         {
             string displayText = "";
-            Random number = new Random();
 
             for (int i = 0; i < 10; i++)
             {
-                displayText += $"{PasswordGenerator.New(2, true, false, number.Next(10, 1000))}\n";
+                displayText += $"{PasswordGenerator.New(2, true, false, SecureRandom.Next(10, 1000))}\n";
             }
 
             bulkGenerateTextBox.Text = displayText;
