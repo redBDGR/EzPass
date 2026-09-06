@@ -65,6 +65,16 @@ namespace EzPass
             { 'l', '1' },
         };
 
+        // Symbols appended to the end of a generated password (see PasswordGenerator.New).
+        // Kept to standard, easily-typable characters - present on every AU/US/UK keyboard via
+        // Shift+<key> with no dead keys or AltGr combinations required - and deliberately disjoint
+        // from replacementChars' values above, so the suffix doesn't visually blend into any
+        // letter-swapped symbols earlier in the password.
+        public static char[] suffixSymbols = new char[]
+        {
+            '!', '#', '%', '^', '&', '*', '-', '_', '+', '=', '?'
+        };
+
         public static Dictionary<char, string> phoneticAlphabet = new Dictionary<char, string>()
         {
             { 'a', "Alpha" },

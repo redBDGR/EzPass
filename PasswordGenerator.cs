@@ -28,14 +28,14 @@ namespace EzPass
             if (useReplacement)
                 ReplaceCharacters(ref pass);
 
-            // Add numbers to the end
+            // Add numbers to the end, followed by a random (rather than fixed) easily-typable symbol
             if (useNumbers)
             {
                 if (determinedRandomNumber == 0)
-                    pass += $".{SecureRandom.Next(10, 1000)}!";
+                    pass += $".{SecureRandom.Next(10, 1000)}{FetchRandomSymbol()}";
                 else
                     // Else if there is already a pre-determined random number (This is only used by the bulk generation window)
-                    pass += $".{determinedRandomNumber}!";
+                    pass += $".{determinedRandomNumber}{FetchRandomSymbol()}";
             }
 
             return pass;
@@ -49,6 +49,16 @@ namespace EzPass
         {
             // Get random word, convert it to lowercase then uppercase the first character (first character won't be turned into a symbol)
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(WordList.shortList[SecureRandom.Next(0, WordList.shortList.Count)].ToLower());
+        }
+
+        /// <summary>
+        /// Fetches a random easily-typable symbol used for the password suffix, found in
+        /// WordList.cs / suffixSymbols
+        /// </summary>
+        /// <returns></returns>
+        private static char FetchRandomSymbol()
+        {
+            return WordList.suffixSymbols[SecureRandom.Next(0, WordList.suffixSymbols.Length)];
         }
 
         /// <summary>
