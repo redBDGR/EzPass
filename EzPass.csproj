@@ -247,6 +247,7 @@
     </Compile>
     <Compile Include="PasswordGenerator.cs" />
     <Compile Include="RegHandler.cs" />
+    <Compile Include="SecureRandom.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="WordList.cs" />
     <Compile Include="WordListView.xaml.cs">
